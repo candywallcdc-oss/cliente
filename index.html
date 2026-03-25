@@ -454,7 +454,7 @@ function buildPayload(){
     porciones: Number(CONFIG.porcionesPorPersona || DEFAULT_PORCIONES),
     factorExcedenteGlobal: Number(CONFIG.factorExcedenteGlobal || 0.8),
     ajustes: [],
-    gastos: [],
+    gastos: JSON.parse(JSON.stringify(GASTOS || [])),
     guardadoEn: new Date().toISOString(),
     origen: 'cliente',
     estado: 'pendiente',
