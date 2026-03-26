@@ -293,11 +293,24 @@ function mapItem(x){
     precio: Number(x.precio||0), porciones: Number(x.porciones||0), premium: String(x.premium||'NO').toUpperCase()==='SI'
   };
 }
+function gastoActivo(g){
+  const v = String(g?.activo ?? 'SI').trim().toUpperCase();
+  return v === 'SI' || v === 'TRUE' || v === '1' || g?.activo === true;
+}
+
 function gastosPorEvento(personas){
-  return GASTOS.filter(g=>g.activo!==false).reduce((acc,g)=>{
-    if(g.tipo==='escala') return acc + Number(g.monto||0) * ceil(personas, Number(g.escala||1)||1);
-    return acc + Number(g.monto||0);
-  },0);
+  return (GASTOS || [])
+    .filter(g => gastoActivo(g))
+    .reduce((acc,g)=>{
+      const monto = Number(g.monto || 0);
+      const tipo = String(g.tipo || '').trim().toLowerCase();
+      const escala = Number(g.escala || 1) || 1;
+
+      if(tipo === 'escala'){
+        return acc + monto * ceil(personas, escala);
+      }
+      return acc + monto;
+    },0);
 }
 function costoCondimentos(personas){
   return CATALOGO.condimentos.reduce((acc,c)=> acc + Number(c.precio||0) * ceil(personas, Number(c.porciones||1)||1), 0);
