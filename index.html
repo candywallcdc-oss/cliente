@@ -354,21 +354,28 @@ function renderCombos(){
   const personas = Number($('personas').value || 80);
   $('lblPersonas').textContent = personas + ' personas';
   const factor = getAjusteFactor();
+
+  console.log('GASTOS cargados cliente:', GASTOS);
+  console.log('Gastos por evento cliente:', gastosPorEvento(personas));
+
   const baseP = calcularBloquePromedio(CATALOGO.premium, personas);
   const baseE = calcularBloquePromedio(CATALOGO.estandar, personas);
   const baseM = calcularBloquePromedio([...CATALOGO.premium, ...CATALOGO.estandar], personas);
   const pvP = Math.ceil((baseP * factor)/50)*50;
   const pvE = Math.ceil((baseE * factor)/50)*50;
   const pvM = Math.ceil((baseM * factor)/50)*50;
+
   $('comboBody').innerHTML = `
     <tr><td>⭐ Todo Premium</td><td>Elige 12 productos de la lista Premium</td><td class="combo-price">${fmt(pvP)}</td></tr>
     <tr><td>🎨 Mix</td><td>Elige 6 Premium + 6 Estándar</td><td class="combo-price">${fmt(pvM)}</td></tr>
     <tr><td>📦 Todo Estándar</td><td>Elige 12 productos de la lista Estándar</td><td class="combo-price">${fmt(pvE)}</td></tr>`;
+
   const paquetes = [
     {k:'premium', n:'Todo Premium', s:'Elige 12 de Premium', p:pvP},
     {k:'mix', n:'Mix 6+6', s:'Elige 6 Premium + 6 Estándar', p:pvM},
     {k:'estandar', n:'Todo Estándar', s:'Elige 12 de Estándar', p:pvE}
   ];
+
   $('packageBox').innerHTML = paquetes.map((x,i)=>`
     <label class="pkg ${i===0?'sel':''}" data-pkg="${x.k}">
       <div style="display:flex;gap:10px;align-items:start">
@@ -380,6 +387,7 @@ function renderCombos(){
         </div>
       </div>
     </label>`).join('');
+
   document.querySelectorAll('.pkg').forEach(el=>{
     el.addEventListener('click',()=>{
       document.querySelectorAll('.pkg').forEach(x=>x.classList.remove('sel'));
